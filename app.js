@@ -1,6 +1,34 @@
 	var bewege = null;
 	var changeSpeed = null;
+  var s = null;
+function connectWS() {
+          try {
+                    var host = "ws://localhost:9000/";
+                    console.log("Host:", host);
+                    
+                    s = new WebSocket(host);
+                    
+                    s.onopen = function (e) {
+                        console.log("Socket opened.");
+                    };
 
+                    s.onclose = function (e) {
+                        console.log("Socket closed.");
+                    };
+                    
+                    s.onmessage = function (e) {
+                        console.log("Socket message:", e.data);
+                    };
+                    
+                    s.onerror = function (e) {
+                        console.log("Socket error:", e);
+                    };
+                    
+                } catch (ex) {
+                    console.log("Socket exception:", ex);
+                } 
+
+}
 	require(["dojo/dom", "dijit/form/HorizontalSlider", "dijit/form/HorizontalRuleLabels", "dojox/gfx", "dojo/domReady!"],
 
 		function (dom, HorizontalSlider, HorizontalRuleLabels, gfx) {
@@ -38,7 +66,10 @@
 			var stange;
 
 			changeSpeed = function (newspeed) {
-				speed = newspeed * SPEED_FAC;
+        // TODO: sent data to WS new speed 
+        s.send(newspeed);
+
+        speed = newspeed * SPEED_FAC;
 			}
 
 			bewege = function() {
@@ -157,3 +188,4 @@
 			}, "SliderLabels");
 		}
 	);
+window.onload = connectWS();

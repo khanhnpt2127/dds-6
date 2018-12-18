@@ -1,5 +1,37 @@
 var bewege = null;
 var changeSpeed = null;
+var s = null;
+function connectWS() {
+          try {
+                    var host = "ws://localhost:9000/";
+                    console.log("Host:", host);
+                    
+                    s = new WebSocket(host);
+                    
+                    s.onopen = function (e) {
+                        console.log("Socket opened.");
+                    };
+
+                    s.onclose = function (e) {
+                        console.log("Socket closed.");
+                    };
+                    
+                    s.onmessage = function (e) {
+                        console.log("Socket message:", e.data);
+                        changeSpeed(e.data);
+                    };
+                    
+                    s.onerror = function (e) {
+                        console.log("Socket error:", e);
+                    };
+                    
+                } catch (ex) {
+                    console.log("Socket exception:", ex);
+                } 
+}
+
+window.onload = connectWS();
+
 
 require(["dojo/dom", "dijit/form/HorizontalSlider", "dijit/form/HorizontalRuleLabels", "dojox/gfx", "dojo/domReady!"],
 
